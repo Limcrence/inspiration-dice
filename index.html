@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="灵感骰子：一个帮你头脑风暴的开源小工具。摇一摇，随机组合发散手法、随机词和约束，蹦出 3 个不寻常的想法。">
+<meta name="theme-color" content="#7c5cff">
+<title>诶？灵感骰子 · 摇出 3 个不寻常的想法</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎲</text></svg>">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="hero">
+  <h1 class="title">诶？<span class="grad">灵感骰子</span></h1>
+  <p class="sub">想不出好点子？摇一下——让概率替你做发散。</p>
+</header>
+
+<nav class="mode-tabs" role="tablist" aria-label="模式切换">
+  <button class="tab active" data-mode="offline" type="button">🧊 离线模式<small>零成本</small></button>
+  <button class="tab" data-mode="online" type="button">⚡ 在线模式<small>AI 直出</small></button>
+</nav>
+
+<section id="panel-online" class="panel hidden" aria-label="在线模式设置">
+  <h2>AI 配置 <span class="hint-note">密钥只存在你浏览器本地（localStorage），不会被上传给任何人</span></h2>
+  <div class="field">
+    <label for="in-base">API 地址（OpenAI 兼容接口）</label>
+    <input id="in-base" type="url" placeholder="https://api.deepseek.com/v1" spellcheck="false">
+  </div>
+  <div class="field">
+    <label for="in-key">API Key</label>
+    <input id="in-key" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false">
+  </div>
+  <div class="field">
+    <label for="in-model">模型名</label>
+    <input id="in-model" type="text" placeholder="deepseek-chat" spellcheck="false">
+  </div>
+  <div class="panel-actions">
+    <button id="btn-save" class="btn small" type="button">💾 保存到本地</button>
+    <button id="btn-clear" class="btn small ghost" type="button">清除</button>
+  </div>
+</section>
+
+<main class="stage">
+  <label class="topic-label" for="in-topic">想脑暴什么？<span class="optional">（可留空，随机给话题）</span></label>
+  <input id="in-topic" type="text" placeholder="例如：怎么让背单词不痛苦" maxlength="60">
+
+  <div class="dice-stage">
+    <button id="dice" class="dice" type="button" role="button" aria-label="摇骰子，生成灵感">
+      <div class="face f1"><b class="d mc"></b></div>
+      <div class="face f2"><b class="d tl"></b><b class="d br"></b></div>
+      <div class="face f3"><b class="d tl"></b><b class="d mc"></b><b class="d br"></b></div>
+      <div class="face f4"><b class="d tl"></b><b class="d tr"></b><b class="d bl"></b><b class="d br"></b></div>
+      <div class="face f5"><b class="d tl"></b><b class="d tr"></b><b class="d mc"></b><b class="d bl"></b><b class="d br"></b></div>
+      <div class="face f6"><b class="d tl"></b><b class="d tr"></b><b class="d ml"></b><b class="d mr"></b><b class="d bl"></b><b class="d br"></b></div>
+    </button>
+    <p class="dice-hint" id="dice-hint">点一下，摇出 3 个想法</p>
+  </div>
+
+  <section id="results" class="cards" aria-live="polite"></section>
+
+  <button id="btn-reroll" class="btn big reroll hidden" type="button">↻ 再摇一次</button>
+</main>
+
+<footer class="foot">
+  <p>灵感骰子 · 开源（MIT）· 纯 HTML/CSS/JS · 无追踪无广告<br>可直接发布到 GitHub Pages</p>
+</footer>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script src="core.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
