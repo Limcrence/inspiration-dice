@@ -71,9 +71,9 @@
     const chips = document.createElement('div');
     chips.className = 'chips';
     c.words.forEach(w => chips.appendChild(makeChip(w.i + ' ' + w.t, '')));
-    chips.appendChild(makeChip('🚧 ' + c.constraint, 'con'));
+    if (c.constraint) chips.appendChild(makeChip('🚧 ' + c.constraint, 'con'));
     head.appendChild(badge);
-    head.appendChild(chips);
+    if (c.words.length || c.constraint) head.appendChild(chips);
     const topicLine = document.createElement('div');
     topicLine.className = 'topic-line';
     topicLine.textContent = '🎯 ' + c.topic;
@@ -85,24 +85,26 @@
     promptBox.textContent = c.prompt;
     card.appendChild(promptBox);
 
-    const demo = document.createElement('div');
-    demo.className = 'demo';
-    const dt = document.createElement('div');
-    dt.className = 'demo-title';
-    dt.textContent = '💡 用词 → 三步跳跃 · 以「' + c.demo.t + '」为例';
-    demo.appendChild(dt);
-    const mk = (pre, txt) => {
-      const p = document.createElement('div');
-      const b = document.createElement('b');
-      b.textContent = pre;
-      p.appendChild(b);
-      p.appendChild(document.createTextNode(txt));
-      return p;
-    };
-    demo.appendChild(mk('① 属性　', c.demo.a));
-    demo.appendChild(mk('② 模式　', c.demo.p));
-    demo.appendChild(mk('③ 映射　', c.demo.m));
-    card.appendChild(demo);
+    if (c.demo) {
+      const demo = document.createElement('div');
+      demo.className = 'demo';
+      const dt = document.createElement('div');
+      dt.className = 'demo-title';
+      dt.textContent = '💡 用词 → 三步跳跃 · 以「' + c.demo.t + '」为例';
+      demo.appendChild(dt);
+      const mk = (pre, txt) => {
+        const p = document.createElement('div');
+        const b = document.createElement('b');
+        b.textContent = pre;
+        p.appendChild(b);
+        p.appendChild(document.createTextNode(txt));
+        return p;
+      };
+      demo.appendChild(mk('① 属性　', c.demo.a));
+      demo.appendChild(mk('② 模式　', c.demo.p));
+      demo.appendChild(mk('③ 映射　', c.demo.m));
+      card.appendChild(demo);
+    }
 
     const actions = document.createElement('div');
     actions.className = 'card-actions';

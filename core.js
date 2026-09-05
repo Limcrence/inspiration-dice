@@ -142,31 +142,61 @@ const DiceCore = (() => {
 
   const END = '\n\n输出要求：直接给 3 个点子，编号【1】【2】【3】；每条最多 2 句话：第一句说清"是什么、具体怎么做"，第二句说"为什么有效"；不要开场白、不要客套、不要重复题目、不要结尾总结；禁止抽象比喻和黑话，要让人读完就能照做。先抓住话题里的情绪词（如"不痛苦""没动力""怕贵"），方案必须正面解决它。\n\n好例子：【1】把生词设成手机解锁题，拼对才能进桌面——背单词从"专门任务"变成"顺手动作"，痛苦感立刻减半。\n坏例子：【1】用记忆宫殿魔法背单词，特别神奇。（没说怎么做，是废话）';
 
+  function isDirectAsk(q) {
+    q = (q || '').trim();
+    if (!q) return false;
+    return /(取|起|改|换|求).{0,8}(网名|昵称|名字|名)|网名|昵称|推荐|求推荐|帮我选|帮我推荐|选一个|推荐几个|推荐一下|起个名|起什么名|叫什么好|选哪个|怎么选|买什么|看什么书|给.{0,6}推荐/.test(q);
+  }
+
+  function buildDirectPrompt(topic, angle) {
+    const mode = angle.req;
+    const extra = angle.extra ? '\n' + angle.extra : '';
+    return '用户的问题：「' + topic + '」\n这是"直接要答案"的问题，不要使用任何发散手法、不要借用任何道具或随机词。\n请直接给出 3 个能直接拿来用的候选（' + mode + '），用【1】【2】【3】编号，每个 1-2 句话。' + extra + '\n不要开场白、不要解释原理、不要结尾总结。';
+  }
+
   function buildPrompt(tech, words, constraint, topic) {
     const t = (topic || '').trim() || DAILY_TOPICS[Math.floor(Math.random() * DAILY_TOPICS.length)];
     const ws = words.map(w => w.t).join('」「');
-    const directAsk = /(取|起|改|换).{0,6}(名|网名|名字|昵称)|网名|推荐|求推荐|帮我选|选一个|给.{0,4}几个|有什么好|叫什么|起个名|标题党|起标题|选哪个|怎么选/.test(t);
-  const extra = directAsk
-    ? '\n\n（注意：用户这是在"直接要答案"，比如取网名、推荐、选方案。请先直接给出 3 个能直接拿来用的候选答案——取网名就直接列 3 个网名，每个配半句理由即可；不要为了套用道具把简单问题绕成复杂流程。若实在没有现成答案，再退回发散手法。）'
-    : '';
-  switch (tech.id) {
+    switch (tech.id) {
       case 'distill':
-        return '【平庸蒸馏】关于「' + t + '」，先别急着出点子。\n第一步：像所有 AI 一样，先给我 3 个最没新意的答案；\n第二步：挖出这 3 个答案共有的隐含假设，写成"必须 X"；\n第三步：把假设全取反，并用「' + ws + '」的意象落地其中一个；\n第四步：加上约束「' + constraint + '」。最后给我 3 个不寻常又看得懂的想法。' + END + extra;
+        return '【平庸蒸馏】关于「' + t + '」，先别急着出点子。\n第一步：像所有 AI 一样，先给我 3 个最没新意的答案；\n第二步：挖出这 3 个答案共有的隐含假设，写成"必须 X"；\n第三步：把假设全取反，并用「' + ws + '」的意象落地其中一个；\n第四步：加上约束「' + constraint + '」。最后给我 3 个不寻常又看得懂的想法。' + END;
       case 'assoc':
-        return '【随机词联想】灵感接力赛，从「' + ws + '」出发：\n① 属性：这个词有什么特点？\n② 模式：把它抽象成通用规律；\n③ 映射：套回「' + t + '」。\n完成三步跳跃后，再塞进约束「' + constraint + '」，给我 3 个不寻常又看得懂的想法。' + END + extra;
+        return '【随机词联想】灵感接力赛，从「' + ws + '」出发：\n① 属性：这个词有什么特点？\n② 模式：把它抽象成通用规律；\n③ 映射：套回「' + t + '」。\n完成三步跳跃后，再塞进约束「' + constraint + '」，给我 3 个不寻常又看得懂的想法。' + END;
       case 'reverse':
-        return '【逆向思维】今天反着来。\n「' + t + '」这件事：假装它已经失败，倒推死因；或者把目标完全反过来；或者换成对手 / 十岁小孩来想。\n把「' + ws + '」当反转的道具，还得满足「' + constraint + '」。给我 3 个不寻常又看得懂的想法。' + END + extra;
+        return '【逆向思维】今天反着来。\n「' + t + '」这件事：假装它已经失败，倒推死因；或者把目标完全反过来；或者换成对手 / 十岁小孩来想。\n把「' + ws + '」当反转的道具，还得满足「' + constraint + '」。给我 3 个不寻常又看得懂的想法。' + END;
       case 'analogy':
-        return '【跨领域类比】换个脑子：把自己想象成「' + ws + '」。\n它平时怎么解决自己的难题（结构 / 机制 / 生存法则）？把它的那套办法翻译过来，用在「' + t + '」上。\n同时约束自己「' + constraint + '」。给我 3 个不寻常又看得懂的想法。' + END + extra;
+        return '【跨领域类比】换个脑子：把自己想象成「' + ws + '」。\n它平时怎么解决自己的难题（结构 / 机制 / 生存法则）？把它的那套办法翻译过来，用在「' + t + '」上。\n同时约束自己「' + constraint + '」。给我 3 个不寻常又看得懂的想法。' + END;
       case 'constraint':
-        return '【约束注入】热身题：如果只能「' + constraint + '」，\n「' + t + '」还能怎么做？\n把「' + ws + '」当灵感燃料随便烧，越奇怪越好。给我 3 个不寻常又看得懂的想法。' + END + extra;
+        return '【约束注入】热身题：如果只能「' + constraint + '」，\n「' + t + '」还能怎么做？\n把「' + ws + '」当灵感燃料随便烧，越奇怪越好。给我 3 个不寻常又看得懂的想法。' + END;
     }
   }
 
   let recentWords = [];
 
+  const DIRECT_ANGLES = [
+    { req: '直接、务实、能当下就用的', extra: '宁可普通一点，也要真的能用。', name: '务实' },
+    { req: '带点新意和个性，但仍然直接能用', extra: '不要为了"灵感"牺牲可用性，不许让人做手工实验。', name: '个性' },
+    { req: '成熟、稳妥、不容易出错', extra: '优先安全牌，别太猎奇。', name: '稳妥' }
+  ];
+
   function roll(topic) {
-    const t = (topic || '').trim() || DAILY_TOPICS[Math.floor(Math.random() * DAILY_TOPICS.length)];
+    const user = (topic || '').trim();
+    const t = user || DAILY_TOPICS[Math.floor(Math.random() * DAILY_TOPICS.length)];
+
+    if (isDirectAsk(user)) {
+      return DIRECT_ANGLES.map((angle, i) => {
+        const tech = { id: 'direct', i: '📝', name: '直接要答案 · ' + angle.name, d: '跳过发散手法，直接给可用的候选' };
+        return {
+          tech,
+          constraint: '',
+          words: [],
+          demo: null,
+          topic: t,
+          prompt: buildDirectPrompt(t, angle)
+        };
+      });
+    }
+
     const techs = shuffle(TECHNIQUES).slice(0, 3);
     const cons = shuffle(CONSTRAINTS).slice(0, 3);
     let pool = WORDS.filter(w => recentWords.indexOf(w.t) === -1);
@@ -183,7 +213,7 @@ const DiceCore = (() => {
     return cards;
   }
 
-  return { TECHNIQUES, CONSTRAINTS, WORDS, roll, buildPrompt, shuffle };
+  return { TECHNIQUES, CONSTRAINTS, WORDS, DAILY_TOPICS, roll, buildPrompt, buildDirectPrompt, isDirectAsk, shuffle };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = DiceCore;
