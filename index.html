@@ -15,12 +15,17 @@
 
 <header class="hero">
   <h1 class="title">诶？<span class="grad">灵感骰子</span></h1>
-  <p class="sub">想不出好点子？摇一下——让概率替你做发散。</p>
+  <p class="sub" id="hero-sub">想不出好点子？摇一下——让概率替你做发散。</p>
 </header>
 
+<nav class="mode-switch" aria-label="模式选择">
+  <button class="mode-btn active" data-mode="brain" type="button">🎲 灵感发散</button>
+  <button class="mode-btn" data-mode="direct" type="button">📝 直接要答案</button>
+</nav>
+
 <main class="stage">
-  <label class="topic-label" for="in-topic">想脑暴什么？<span class="optional">（可留空，随机给话题）</span></label>
-  <input id="in-topic" type="text" placeholder="例如：怎么让背单词不痛苦" maxlength="60">
+  <label class="topic-label" for="in-topic"><span id="topic-label">想脑暴什么？</span><span class="optional" id="topic-opt">（可留空，随机给话题）</span></label>
+  <input id="in-topic" type="text" placeholder="例如：怎么让背单词不痛苦" maxlength="80">
 
   <div class="dice-stage">
     <button id="dice" class="dice" type="button" role="button" aria-label="摇骰子，生成灵感">
@@ -47,14 +52,15 @@
   <div class="modal-box">
     <button id="btn-help-close" class="modal-close" type="button" aria-label="关闭">✕</button>
     <h2 id="help-title">🎲 30 秒上手</h2>
+    <p class="help-intro">顶部可以切换两种模式：<b>🎲 灵感发散</b>（帮你把想法"蹦"出来）或 <b>📝 直接要答案</b>（取网名、求推荐这类，直接给你能用的答案）。</p>
     <ol class="help-steps">
-      <li>在输入框写下你想脑暴的问题（比如"怎么让背单词不痛苦"）。留空也行，会自动随机一个日常小麻烦。</li>
+      <li>选好模式后，在输入框写下你的问题，比如"怎么让背单词不痛苦"或"取个网名"。灵感发散模式留空也行，会自动随机一个日常小麻烦。</li>
       <li>点中间的大骰子，等它停下来。</li>
-      <li>你会得到 <b>3 张卡片</b>：每张是一种<b>发散手法</b> + 随机词 + 一条约束，外加一段写好的<b>提示语</b>。</li>
-      <li>点卡片上的「📋 复制提示语」，把它发给任意 AI（DeepSeek、ChatGPT、豆包等），AI 会按提示语展开成 3 个点子。</li>
-      <li>不满意就点「↻ 再摇一次」——手法、词、约束都会换一批，连续两次不会重复。</li>
+      <li><b>灵感发散模式</b>：3 张卡片 = 发散手法 + 随机词 + 约束 + 提示语 + "三步跳跃"演示。<b>直接要答案模式</b>：3 张卡片 = 三种答题姿势（清单轰炸 / 权衡首选 / 避坑版），挑一张顺眼的用。</li>
+      <li>点卡片上的「📋 复制提示语」，发给任意 AI（DeepSeek、ChatGPT、豆包等）即可。</li>
+      <li>不满意就点「↻ 再摇一次」——灵感发散连续两次不会重复词。</li>
     </ol>
-    <p class="help-tip">💡 卡片里的"用词 → 三步跳跃"是在演示思路：词的属性 → 抽象成模式 → 映射回你的问题。不给 AI 也能自己顺着想。</p>
+    <p class="help-tip">💡 灵感发散卡片里的"用词 → 三步跳跃"是在演示思路：词的属性 → 抽象成模式 → 映射回你的问题。不给 AI 也能自己顺着想。</p>
   </div>
 </div>
 

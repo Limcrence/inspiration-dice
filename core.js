@@ -148,12 +148,6 @@ const DiceCore = (() => {
     return /(取|起|改|换|求).{0,8}(网名|昵称|名字|名)|网名|昵称|推荐|求推荐|帮我选|帮我推荐|选一个|推荐几个|推荐一下|起个名|起什么名|叫什么好|选哪个|怎么选|买什么|看什么书|给.{0,6}推荐/.test(q);
   }
 
-  function buildDirectPrompt(topic, angle) {
-    const mode = angle.req;
-    const extra = angle.extra ? '\n' + angle.extra : '';
-    return '用户的问题：「' + topic + '」\n这是"直接要答案"的问题，不要使用任何发散手法、不要借用任何道具或随机词。\n请直接给出 3 个能直接拿来用的候选（' + mode + '），用【1】【2】【3】编号，每个 1-2 句话。' + extra + '\n不要开场白、不要解释原理、不要结尾总结。';
-  }
-
   function buildPrompt(tech, words, constraint, topic) {
     const t = (topic || '').trim() || DAILY_TOPICS[Math.floor(Math.random() * DAILY_TOPICS.length)];
     const ws = words.map(w => w.t).join('」「');
@@ -173,30 +167,35 @@ const DiceCore = (() => {
 
   let recentWords = [];
 
-  const DIRECT_ANGLES = [
-    { req: '直接、务实、能当下就用的', extra: '宁可普通一点，也要真的能用。', name: '务实' },
-    { req: '带点新意和个性，但仍然直接能用', extra: '不要为了"灵感"牺牲可用性，不许让人做手工实验。', name: '个性' },
-    { req: '成熟、稳妥、不容易出错', extra: '优先安全牌，别太猎奇。', name: '稳妥' }
+  const DIRECT_STYLES = [
+    {
+      i: '📋',
+      name: '清单轰炸',
+      d: '一口气给一大批候选，风格拉开随便挑',
+      ask: function (t) {
+        return '用户请求：「' + t + '」\n请按"直接要答案"处理，不要用头脑风暴手法，不要让我做任何手工或道具操作。\n给我 8-10 个能直接拿来用的候选，按【1】【2】…编号，每个不超过一行；候选要风格拉开（不同类型、不同调性都来几个），别挤在同一种里。\n直接输出，不要开场白、不要解释、不要结尾总结。';
+      }
+    },
+    {
+      i: '⚖️',
+      name: '权衡首选',
+      d: '给 3 个最好候选，各带优缺点，最后点名首选',
+      ask: function (t) {
+        return '用户请求：「' + t + '」\n请按"直接要答案"处理，不要用头脑风暴手法，不要让我做任何手工或道具操作。\n给我 3 个最好的候选，每个各写两句：一句说它好在哪、适合什么样的人，一句说它的一个缺点或坑；最后单独一行写「我的首选：…，因为…」。\n直接输出，不要开场白、不要结尾总结。';
+      }
+    },
+    {
+      i: '🛡️',
+      name: '避坑版',
+      d: '先指出这类问题常踩的坑，再给绕开坑的候选',
+      ask: function (t) {
+        return '用户请求：「' + t + '」\n请按"直接要答案"处理，不要用头脑风暴手法，不要让我做任何手工或道具操作。\n第一步：用一句话指出这类问题最容易踩的 3 个坑（结合你的领域举例，比如取名类的重名、生僻字、歧义）；第二步：给出 3 个能绕开这些坑的候选。\n直接输出，不要开场白、不要结尾总结。';
+      }
+    }
   ];
 
   function roll(topic) {
-    const user = (topic || '').trim();
-    const t = user || DAILY_TOPICS[Math.floor(Math.random() * DAILY_TOPICS.length)];
-
-    if (isDirectAsk(user)) {
-      return DIRECT_ANGLES.map((angle, i) => {
-        const tech = { id: 'direct', i: '📝', name: '直接要答案 · ' + angle.name, d: '跳过发散手法，直接给可用的候选' };
-        return {
-          tech,
-          constraint: '',
-          words: [],
-          demo: null,
-          topic: t,
-          prompt: buildDirectPrompt(t, angle)
-        };
-      });
-    }
-
+    const t = (topic || '').trim() || DAILY_TOPICS[Math.floor(Math.random() * DAILY_TOPICS.length)];
     const techs = shuffle(TECHNIQUES).slice(0, 3);
     const cons = shuffle(CONSTRAINTS).slice(0, 3);
     let pool = WORDS.filter(w => recentWords.indexOf(w.t) === -1);
@@ -213,7 +212,19 @@ const DiceCore = (() => {
     return cards;
   }
 
-  return { TECHNIQUES, CONSTRAINTS, WORDS, DAILY_TOPICS, roll, buildPrompt, buildDirectPrompt, isDirectAsk, shuffle };
+  function rollDirect(topic) {
+    const t = (topic || '').trim() || DAILY_TOPICS[Math.floor(Math.random() * DAILY_TOPICS.length)];
+    return DIRECT_STYLES.map(s => ({
+      tech: { id: 'direct', i: s.i, name: '直答 · ' + s.name, d: s.d },
+      constraint: '',
+      words: [],
+      demo: null,
+      topic: t,
+      prompt: s.ask(t)
+    }));
+  }
+
+  return { TECHNIQUES, CONSTRAINTS, WORDS, DAILY_TOPICS, DIRECT_STYLES, roll, rollDirect, buildPrompt, isDirectAsk, shuffle };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = DiceCore;

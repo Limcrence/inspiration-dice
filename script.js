@@ -11,8 +11,44 @@
     toast: $('#toast'),
     helpBtn: $('#btn-help'),
     helpModal: $('#help-modal'),
-    helpClose: $('#btn-help-close')
+    helpClose: $('#btn-help-close'),
+    modeBtns: Array.from(document.querySelectorAll('.mode-btn')),
+    topicLabel: $('#topic-label'),
+    topicOpt: $('#topic-opt'),
+    heroSub: $('#hero-sub')
   };
+
+  const MODE_TEXT = {
+    brain: {
+      label: '想脑暴什么？',
+      opt: '（可留空，随机给话题）',
+      ph: '例如：怎么让背单词不痛苦',
+      hint: '点一下，摇出 3 个想法',
+      sub: '想不出好点子？摇一下——让概率替你做发散。'
+    },
+    direct: {
+      label: '你想要什么答案？',
+      opt: '（直答模式请填问题，如取网名、求推荐）',
+      ph: '例如：给我取个网名，我想要有个性的',
+      hint: '点一下，直接摇出 3 种答题姿势',
+      sub: '别绕弯子——让 AI 直接给你能用的答案。'
+    }
+  };
+
+  let mode = 'brain';
+  let rolling = false;
+
+  function setMode(m) {
+    mode = m;
+    els.modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+    const tx = MODE_TEXT[m];
+    els.topicLabel.textContent = tx.label;
+    els.topicOpt.textContent = tx.opt;
+    els.topic.placeholder = tx.ph;
+    els.heroSub.textContent = tx.sub;
+    if (!rolling) els.hint.textContent = tx.hint;
+  }
+  els.modeBtns.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
 
   els.helpBtn.addEventListener('click', () => els.helpModal.classList.remove('hidden'));
   function closeHelp() { els.helpModal.classList.add('hidden'); }
@@ -21,8 +57,6 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHelp(); });
 
   const FACE_ROT = { 1: [0, 0], 2: [0, 180], 3: [0, -90], 4: [0, 90], 5: [-90, 0], 6: [90, 0] };
-
-  let rolling = false;
 
   function toast(msg) {
     els.toast.textContent = msg;
@@ -126,7 +160,13 @@
 
   function doRoll() {
     if (rolling) return;
-    const cards = DiceCore.roll(els.topic.value);
+    const q = els.topic.value.trim();
+    if (mode === 'direct' && !q) {
+      toast('📝 直答模式：先在上方填你的问题');
+      els.topic.focus();
+      return;
+    }
+    const cards = mode === 'direct' ? DiceCore.rollDirect(q) : DiceCore.roll(q);
 
     const face = 1 + Math.floor(Math.random() * 6);
     const turns = 360 * (2 + Math.floor(Math.random() * 2));
@@ -146,7 +186,7 @@
       els.dice.removeAttribute('aria-busy');
       rolling = false;
       renderCards(cards);
-      els.hint.textContent = '再来一次？';
+      els.hint.textContent = mode === 'direct' ? '换个角度再摇一次？' : '再来一次？';
     }, 1300);
   }
 
@@ -155,10 +195,15 @@
 
   const qs = new URLSearchParams(location.search);
   if (qs.has('selftest')) {
+    if (qs.get('mode') === 'direct') {
+      setMode('direct');
+      els.topic.value = '给我取个网名';
+    }
     setTimeout(() => els.dice.click(), 400);
     setTimeout(() => {
       const n = els.results.querySelectorAll('.card').length;
-      document.title = n === 3 ? 'SELFTEST PASS' : 'SELFTEST FAIL n=' + n;
+      const ok = n === 3 && els.results.querySelector('.card .prompt').textContent.length > 0;
+      document.title = ok ? 'SELFTEST PASS' : 'SELFTEST FAIL n=' + n;
     }, 2800);
   }
 })();
