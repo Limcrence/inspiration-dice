@@ -11,6 +11,8 @@
 </head>
 <body>
 
+<button id="btn-help" class="help-btn" type="button" aria-label="打开使用教程">❓ 怎么玩</button>
+
 <header class="hero">
   <h1 class="title">诶？<span class="grad">灵感骰子</span></h1>
   <p class="sub">想不出好点子？摇一下——让概率替你做发散。</p>
@@ -38,8 +40,23 @@
 </main>
 
 <footer class="foot">
-  <p>灵感骰子 · 开源（MIT）· 纯 HTML/CSS/JS · 无追踪无广告<br>可直接发布到 GitHub Pages</p>
+  <p>灵感骰子 · 纯 HTML/CSS/JS</p>
 </footer>
+
+<div id="help-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="help-title">
+  <div class="modal-box">
+    <button id="btn-help-close" class="modal-close" type="button" aria-label="关闭">✕</button>
+    <h2 id="help-title">🎲 30 秒上手</h2>
+    <ol class="help-steps">
+      <li>在输入框写下你想脑暴的问题（比如"怎么让背单词不痛苦"）。留空也行，会自动随机一个日常小麻烦。</li>
+      <li>点中间的大骰子，等它停下来。</li>
+      <li>你会得到 <b>3 张卡片</b>：每张是一种<b>发散手法</b> + 随机词 + 一条约束，外加一段写好的<b>提示语</b>。</li>
+      <li>点卡片上的「📋 复制提示语」，把它发给任意 AI（DeepSeek、ChatGPT、豆包等），AI 会按提示语展开成 3 个点子。</li>
+      <li>不满意就点「↻ 再摇一次」——手法、词、约束都会换一批，连续两次不会重复。</li>
+    </ol>
+    <p class="help-tip">💡 卡片里的"用词 → 三步跳跃"是在演示思路：词的属性 → 抽象成模式 → 映射回你的问题。不给 AI 也能自己顺着想。</p>
+  </div>
+</div>
 
 <div id="toast" class="toast" role="status"></div>
 

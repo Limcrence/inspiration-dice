@@ -8,8 +8,17 @@
     topic: $('#in-topic'),
     results: $('#results'),
     reroll: $('#btn-reroll'),
-    toast: $('#toast')
+    toast: $('#toast'),
+    helpBtn: $('#btn-help'),
+    helpModal: $('#help-modal'),
+    helpClose: $('#btn-help-close')
   };
+
+  els.helpBtn.addEventListener('click', () => els.helpModal.classList.remove('hidden'));
+  function closeHelp() { els.helpModal.classList.add('hidden'); }
+  els.helpClose.addEventListener('click', closeHelp);
+  els.helpModal.addEventListener('click', e => { if (e.target === els.helpModal) closeHelp(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHelp(); });
 
   const FACE_ROT = { 1: [0, 0], 2: [0, 180], 3: [0, -90], 4: [0, 90], 5: [-90, 0], 6: [90, 0] };
 
