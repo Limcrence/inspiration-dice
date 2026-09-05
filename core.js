@@ -46,7 +46,27 @@ const DiceCore = (() => {
     '怎么把写作业的时间压缩',
     '怎么让电池续航更久',
     '怎么让垃圾分类更省心',
-    '怎么让宠物不乱叫'
+    '怎么让宠物不乱叫',
+    '怎么让外卖到了不凉',
+    '怎么让充电线不再缠成一团',
+    '怎么让家里不积灰',
+    '怎么让久坐不腰疼',
+    '怎么让空调电费降下来',
+    '怎么让早晨的闹钟不响两次',
+    '怎么让快递纸箱不再堆成山',
+    '怎么让衣服不皱',
+    '怎么让鼠标手不痛',
+    '怎么让眼睛不酸',
+    '怎么让房间隔音好一点',
+    '怎么让鞋子不磨脚',
+    '怎么让背包不再越来越重',
+    '怎么让窗户一擦就亮',
+    '怎么让冰箱没怪味',
+    '怎么让蚊子夏天不咬人',
+    '怎么让床单铺得又快又平',
+    '怎么让约会不冷场',
+    '怎么让快递拆完不乱扔',
+    '怎么让手机内存一直够用'
   ];
   const WORDS = [
     { t: '钟表', i: '🕰️', a: '指针不停走，永远知道"现在几点"', p: '用刻度制造确定性', m: '给用户一个看得见的刻度，让等待变确定' },
@@ -123,7 +143,7 @@ const DiceCore = (() => {
   const END = '\n\n输出要求：直接给 3 个点子，编号【1】【2】【3】；每条最多 2 句话：第一句说清"是什么、具体怎么做"，第二句说"为什么有效"；不要开场白、不要客套、不要重复题目、不要结尾总结；禁止抽象比喻和黑话，要让人读完就能照做。先抓住话题里的情绪词（如"不痛苦""没动力""怕贵"），方案必须正面解决它。\n\n好例子：【1】把生词设成手机解锁题，拼对才能进桌面——背单词从"专门任务"变成"顺手动作"，痛苦感立刻减半。\n坏例子：【1】用记忆宫殿魔法背单词，特别神奇。（没说怎么做，是废话）';
 
   function buildPrompt(tech, words, constraint, topic) {
-    const t = (topic || '').trim() || '一个你想解决的日常小麻烦';
+    const t = (topic || '').trim() || DAILY_TOPICS[Math.floor(Math.random() * DAILY_TOPICS.length)];
     const ws = words.map(w => w.t).join('」「');
     switch (tech.id) {
       case 'distill':
@@ -142,7 +162,7 @@ const DiceCore = (() => {
   let recentWords = [];
 
   function roll(topic) {
-    const t = (topic || '').trim() || (Math.random()<0.5 ? DAILY_TOPICS[Math.floor(Math.random()*DAILY_TOPICS.length)] : '一个你想解决的日常小麻烦');
+    const t = (topic || '').trim() || DAILY_TOPICS[Math.floor(Math.random() * DAILY_TOPICS.length)];
     const techs = shuffle(TECHNIQUES).slice(0, 3);
     const cons = shuffle(CONSTRAINTS).slice(0, 3);
     let pool = WORDS.filter(w => recentWords.indexOf(w.t) === -1);
