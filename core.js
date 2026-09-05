@@ -48,7 +48,7 @@ const DiceCore = (() => {
     '怎么让垃圾分类更省心',
     '怎么让宠物不乱叫'
   ];
-    { t: '钟表', i: '🕰️', a: '指针不停走，永远知道"现在几点"', p: '用刻度制造确定性', m: '给用户一个看得见的刻度，让等待变确定' },
+  const WORDS = [
     { t: '灯塔', i: '🗼', a: '黑暗里只发一束光，远船也看得懂', p: '单个信号 + 约定含义 = 跨距离信息', m: '用一个极简信号，替代一堆说明文字' },
     { t: '蜂巢', i: '🐝', a: '一格一格六边形，住满还有空位', p: '小单元 + 统一接口 = 无限扩展', m: '把一件事拆成能互相拼接的小格子' },
     { t: '磁铁', i: '🧲', a: '不用碰就能吸住，隔着纸也有效', p: '无形力场代替物理接触', m: '让功能靠"靠近"触发，而不是点击' },
@@ -117,7 +117,7 @@ const DiceCore = (() => {
   }
 
   function roll(topic) {
-    const t = (topic || '').trim() || '';
+    const t = (topic || '').trim() || (Math.random()<0.5 ? DAILY_TOPICS[Math.floor(Math.random()*DAILY_TOPICS.length)] : '一个你想解决的日常小麻烦');
     const techs = shuffle(TECHNIQUES).slice(0, 3);
     const cons = shuffle(CONSTRAINTS).slice(0, 3);
     const words = shuffle(WORDS);
