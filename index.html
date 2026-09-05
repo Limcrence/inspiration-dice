@@ -16,31 +16,6 @@
   <p class="sub">想不出好点子？摇一下——让概率替你做发散。</p>
 </header>
 
-<nav class="mode-tabs" role="tablist" aria-label="模式切换">
-  <button class="tab active" data-mode="offline" type="button">🧊 离线模式<small>零成本</small></button>
-  <button class="tab" data-mode="online" type="button">⚡ 在线模式<small>AI 直出</small></button>
-</nav>
-
-<section id="panel-online" class="panel hidden" aria-label="在线模式设置">
-  <h2>AI 配置 <span class="hint-note">密钥只存在你浏览器本地（localStorage），不会被上传给任何人</span></h2>
-  <div class="field">
-    <label for="in-base">API 地址（OpenAI 兼容接口）</label>
-    <input id="in-base" type="url" placeholder="https://api.deepseek.com/v1" spellcheck="false">
-  </div>
-  <div class="field">
-    <label for="in-key">API Key</label>
-    <input id="in-key" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false">
-  </div>
-  <div class="field">
-    <label for="in-model">模型名</label>
-    <input id="in-model" type="text" placeholder="deepseek-chat" spellcheck="false">
-  </div>
-  <div class="panel-actions">
-    <button id="btn-save" class="btn small" type="button">💾 保存到本地</button>
-    <button id="btn-clear" class="btn small ghost" type="button">清除</button>
-  </div>
-</section>
-
 <main class="stage">
   <label class="topic-label" for="in-topic">想脑暴什么？<span class="optional">（可留空，随机给话题）</span></label>
   <input id="in-topic" type="text" placeholder="例如：怎么让背单词不痛苦" maxlength="60">
