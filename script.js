@@ -13,6 +13,8 @@
     helpModal: $('#help-modal'),
     helpClose: $('#btn-help-close'),
     modeBtns: Array.from(document.querySelectorAll('.mode-btn')),
+    levelBtns: Array.from(document.querySelectorAll('.level-btn')),
+    levelRow: $('#level-row'),
     topicLabel: $('#topic-label'),
     topicOpt: $('#topic-opt'),
     heroSub: $('#hero-sub')
@@ -36,6 +38,7 @@
   };
 
   let mode = 'brain';
+  let level = 0;
   let rolling = false;
 
   function setMode(m) {
@@ -46,9 +49,16 @@
     els.topicOpt.textContent = tx.opt;
     els.topic.placeholder = tx.ph;
     els.heroSub.textContent = tx.sub;
+    els.levelRow.classList.toggle('hidden', m === 'direct');
     if (!rolling) els.hint.textContent = tx.hint;
   }
   els.modeBtns.forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+
+  function setLevel(l) {
+    level = Number(l);
+    els.levelBtns.forEach(b => b.classList.toggle('active', Number(b.dataset.level) === level));
+  }
+  els.levelBtns.forEach(b => b.addEventListener('click', () => setLevel(b.dataset.level)));
 
   els.helpBtn.addEventListener('click', () => els.helpModal.classList.remove('hidden'));
   function closeHelp() { els.helpModal.classList.add('hidden'); }
@@ -166,7 +176,7 @@
       els.topic.focus();
       return;
     }
-    const cards = mode === 'direct' ? DiceCore.rollDirect(q) : DiceCore.roll(q);
+    const cards = mode === 'direct' ? DiceCore.rollDirect(q) : DiceCore.roll(q, level);
 
     const face = 1 + Math.floor(Math.random() * 6);
     const turns = 360 * (2 + Math.floor(Math.random() * 2));
@@ -198,6 +208,8 @@
     if (qs.get('mode') === 'direct') {
       setMode('direct');
       els.topic.value = '给我取个网名';
+    } else if (qs.get('level')) {
+      setLevel(qs.get('level'));
     }
     setTimeout(() => els.dice.click(), 400);
     setTimeout(() => {

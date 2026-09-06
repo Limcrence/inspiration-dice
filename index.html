@@ -27,6 +27,15 @@
   <label class="topic-label" for="in-topic"><span id="topic-label">想脑暴什么？</span><span class="optional" id="topic-opt">（可留空，随机给话题）</span></label>
   <input id="in-topic" type="text" placeholder="例如：怎么让背单词不痛苦" maxlength="80">
 
+  <div class="level-row" id="level-row">
+    <span class="level-label">脑洞强度</span>
+    <div class="level-btns" role="group" aria-label="脑洞强度">
+      <button class="level-btn active" data-level="0" type="button">务实落地</button>
+      <button class="level-btn" data-level="1" type="button">平衡</button>
+      <button class="level-btn" data-level="2" type="button">天马行空</button>
+    </div>
+  </div>
+
   <div class="dice-stage">
     <button id="dice" class="dice" type="button" role="button" aria-label="摇骰子，生成灵感">
       <div class="face f1"><b class="d mc"></b></div>

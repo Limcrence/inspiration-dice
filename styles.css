@@ -90,6 +90,41 @@ body::after { width: 360px; height: 360px; background: #ffead9; bottom: -100px; 
 }
 #in-topic:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(124, 92, 255, .14); }
 
+.level-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.level-label { font-size: 12.5px; color: var(--ink-soft); }
+.level-btns {
+  display: flex;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid #e7e1fb;
+  border-radius: 999px;
+  padding: 3px;
+}
+.level-btn {
+  border: none;
+  background: transparent;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  cursor: pointer;
+  color: var(--ink-soft);
+  font-family: inherit;
+  transition: .2s;
+}
+.level-btn.active {
+  background: linear-gradient(135deg, #ffb199, #ff8a5c);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(255, 138, 92, .4);
+}
+.level-btn:focus-visible { outline: 3px solid rgba(255, 138, 92, .45); outline-offset: 2px; }
+
 .dice-stage { display: flex; flex-direction: column; align-items: center; gap: 16px; margin: 34px 0 6px; }
 .dice {
   width: var(--dice);
