@@ -11,6 +11,26 @@
 </head>
 <body>
 
+<div id="gate" class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+  <div class="gate-box">
+    <h2 id="gate-title">📜 使用协议</h2>
+    <p class="gate-note">使用灵感骰子前，请阅读并同意以下条款：</p>
+    <ol class="gate-terms">
+      <li><b>非商业用途</b>：本工具及它所生成的内容（含提示语、点子、教程）仅供个人学习、娱乐与头脑风暴使用，<b>不得用于任何商业用途</b>（包括但不限于二次售卖、收费服务、商业引流与宣传）。</li>
+      <li><b>免责声明</b>：点子等内容由第三方 AI 生成，仅供参考与启发，不构成任何专业建议；请自行判断与核实后再采用。</li>
+      <li><b>使用责任</b>：请勿用本工具输出违法、侵权或伤害他人的内容；由此产生的后果由使用者自行承担。</li>
+      <li><b>按原样提供</b>：本工具按"AS IS"提供，开发者不对内容的准确性、完整性或适用性作任何保证。</li>
+    </ol>
+    <label class="gate-agree">
+      <input type="checkbox" id="gate-agree"> 我已阅读并同意以上《使用协议》
+    </label>
+    <div class="gate-actions">
+      <button id="btn-gate-enter" class="btn gate-enter" type="button" disabled>同意并进入</button>
+      <button id="btn-gate-leave" class="btn ghost gate-leave" type="button">不同意，退出</button>
+    </div>
+  </div>
+</div>
+
 <button id="btn-help" class="help-btn" type="button" aria-label="打开使用教程">❓ 怎么玩</button>
 
 <header class="hero">

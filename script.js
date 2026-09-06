@@ -12,6 +12,10 @@
     helpBtn: $('#btn-help'),
     helpModal: $('#help-modal'),
     helpClose: $('#btn-help-close'),
+    gate: $('#gate'),
+    gateAgree: $('#gate-agree'),
+    gateEnter: $('#btn-gate-enter'),
+    gateLeave: $('#btn-gate-leave'),
     modeBtns: Array.from(document.querySelectorAll('.mode-btn')),
     levelBtns: Array.from(document.querySelectorAll('.level-btn')),
     levelRow: $('#level-row'),
@@ -59,6 +63,31 @@
     els.levelBtns.forEach(b => b.classList.toggle('active', Number(b.dataset.level) === level));
   }
   els.levelBtns.forEach(b => b.addEventListener('click', () => setLevel(b.dataset.level)));
+
+  const CONSENT_KEY = 'idice.consent';
+
+  function isConsented() {
+    try { return localStorage.getItem(CONSENT_KEY) === '1'; } catch (e) { return false; }
+  }
+  function setConsented() {
+    try { localStorage.setItem(CONSENT_KEY, '1'); } catch (e) { }
+  }
+
+  els.gateAgree.addEventListener('change', () => {
+    els.gateEnter.disabled = !els.gateAgree.checked;
+  });
+  els.gateEnter.addEventListener('click', () => {
+    setConsented();
+    els.gate.classList.add('hidden');
+  });
+  els.gateLeave.addEventListener('click', () => {
+    try { history.back(); } catch (e) { }
+    if (document.referrer) { window.close(); }
+    els.gateAgree.checked = false;
+    els.gateEnter.disabled = true;
+    els.gateEnter.textContent = '请勾选同意后进入';
+  });
+  if (isConsented()) els.gate.classList.add('hidden');
 
   els.helpBtn.addEventListener('click', () => els.helpModal.classList.remove('hidden'));
   function closeHelp() { els.helpModal.classList.add('hidden'); }
