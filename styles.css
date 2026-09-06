@@ -125,12 +125,13 @@ body::after { width: 360px; height: 360px; background: #ffead9; bottom: -100px; 
 }
 .level-btn:focus-visible { outline: 3px solid rgba(255, 138, 92, .45); outline-offset: 2px; }
 
-.dice-stage { display: flex; flex-direction: column; align-items: center; gap: 16px; margin: 34px 0 6px; }
+.dice-stage { display: flex; flex-direction: column; align-items: center; gap: 16px; margin: 34px 0 6px; perspective: 800px; }
 .dice {
   width: var(--dice);
   height: var(--dice);
   position: relative;
   transform-style: preserve-3d;
+  will-change: transform;
   cursor: pointer;
   background: transparent;
   border: none;
@@ -151,6 +152,8 @@ body::after { width: 360px; height: 360px; background: #ffead9; bottom: -100px; 
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
   place-items: center;
   padding: 12px;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 .f1 { transform: translateZ(var(--half)); }
 .f2 { transform: rotateY(180deg) translateZ(var(--half)); }
