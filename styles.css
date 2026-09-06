@@ -141,7 +141,7 @@ body::after { width: 360px; height: 360px; background: #ffead9; bottom: -100px; 
 .dice:hover:not(:disabled) { transform: rotateX(-18deg) rotateY(28deg) rotateZ(6deg) scale(1.07); }
 .dice:active:not(:disabled) { transform: scale(.94); }
 .dice:disabled { cursor: default; }
-.dice.rolling { animation: roll 1.25s cubic-bezier(.2, .7, .3, 1); }
+.dice.rolling { animation: roll 1.25s cubic-bezier(.2, .7, .3, 1) forwards; }
 @keyframes roll {
   0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
   25% { transform: rotateX(180deg) rotateY(130deg) rotateZ(90deg); }
