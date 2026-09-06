@@ -168,6 +168,39 @@
     els.reroll.classList.remove('hidden');
   }
 
+  function spinTo(rx, ry, done) {
+    const setFinal = () => {
+      els.dice.style.transform = 'rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)';
+    };
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !els.dice.animate) {
+      setFinal();
+      done();
+      return;
+    }
+    const anim = els.dice.animate([
+      { transform: 'rotateX(0deg) rotateY(0deg) rotateZ(0deg)', offset: 0 },
+      { transform: 'rotateX(180deg) rotateY(130deg) rotateZ(90deg)', offset: .3 },
+      { transform: 'rotateX(390deg) rotateY(310deg) rotateZ(180deg)', offset: .6 },
+      { transform: 'rotateX(600deg) rotateY(440deg) rotateZ(240deg)', offset: .85 },
+      { transform: 'rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) rotateZ(0deg)', offset: 1 }
+    ], {
+      duration: 1200,
+      easing: 'cubic-bezier(.2, .7, .3, 1)',
+      fill: 'forwards'
+    });
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      setFinal();
+      try { anim.cancel(); } catch (e) { }
+      done();
+    };
+    anim.onfinish = finish;
+    setTimeout(finish, 1400);
+  }
+
   function doRoll() {
     if (rolling) return;
     const q = els.topic.value.trim();
@@ -180,24 +213,18 @@
 
     const face = 1 + Math.floor(Math.random() * 6);
     const turns = 360 * (2 + Math.floor(Math.random() * 2));
-    const rx0 = FACE_ROT[face][0];
-    const ry0 = FACE_ROT[face][1];
-    els.dice.style.setProperty('--rx', (rx0 + turns) + 'deg');
-    els.dice.style.setProperty('--ry', (ry0 + turns) + 'deg');
+    const rx = FACE_ROT[face][0] + turns;
+    const ry = FACE_ROT[face][1] + turns;
 
     rolling = true;
-    els.dice.classList.add('rolling');
     els.dice.setAttribute('aria-busy', 'true');
     els.hint.textContent = '🎲 骰子飞旋中…';
-
-    setTimeout(() => {
-      els.dice.classList.remove('rolling');
-      els.dice.style.transform = 'rotateX(var(--rx)) rotateY(var(--ry))';
-      els.dice.removeAttribute('aria-busy');
+    spinTo(rx, ry, () => {
       rolling = false;
+      els.dice.removeAttribute('aria-busy');
       renderCards(cards);
       els.hint.textContent = mode === 'direct' ? '换个角度再摇一次？' : '再来一次？';
-    }, 1300);
+    });
   }
 
   els.dice.addEventListener('click', doRoll);
